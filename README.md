@@ -6,12 +6,17 @@ Ansible playbook for configuring macOS machines.
 
 - Ansible installed: `brew install ansible`
 - Galaxy collections: `ansible-galaxy collection install -r requirements.yml`
+- `dockutil` available (used by the `macos-defaults` role): `brew install dockutil`
+- Optional (recommended for unattended updates): run `./00prerequiste.sh` once to allow passwordless `/usr/sbin/softwareupdate`
 
 ## Quick start
 
 ```bash
 # Install dependencies
 ansible-galaxy collection install -r requirements.yml
+
+# Optional: allow passwordless softwareupdate for update role
+./00prerequiste.sh
 
 # Run
 ./01run
@@ -44,10 +49,10 @@ Edit `inventory/group_vars/`:
 
 | Role | Description |
 |---|---|
-| `macos-update` | System updates + Xcode CLI tools |
+| `macos-update` | System updates + Xcode CLI tools (uses passwordless `softwareupdate` when configured) |
 | `homebrew` | Installs Homebrew |
-| `macos-defaults` | System preferences (Dock, Finder, etc.) |
+| `macos-defaults` | System preferences (Dock, Finder, menu bar, screenshots) and Dock stack setup via `dockutil` |
 | `common` | Home directories |
-| `macos-sudo` | Configure passwordless sudo |
+| `macos-sudo` | Configure passwordless sudo for `/usr/sbin/softwareupdate` |
 | `packages-base` | CLI tools via Homebrew |
 | `dotfiles` | Dotfiles deployment |
