@@ -26,5 +26,6 @@ homebrew_casks:
   - karabiner-elements
   - localsend
   - antigravity
+  - theboredteam/boring-notch/boring-notch
   - balenaetcher
   - utm

@@ -14,7 +14,7 @@ Ansible playbook for configuring macOS machines.
 ansible-galaxy collection install -r requirements.yml
 
 # Run
-./runit-mac
+./01run
 ```
 
 ## Usage

@@ -1,4 +1,11 @@
 ---
+dock_apps: []
+
+dock_stacks_base_path: "{{ lookup('env', 'HOME') }}/DockStacks"
+dock_stack_path: "{{ dock_stacks_base_path }}/Communication"
+dock_browser_stack_path: "{{ dock_stacks_base_path }}/Browsers"
+dock_downloads_path: "{{ lookup('env', 'HOME') }}/Downloads"
+
 macos_defaults:
   # Dock
   - domain: com.apple.dock
@@ -12,15 +19,23 @@ macos_defaults:
   - domain: com.apple.dock
     key: autohide-time-modifier
     type: float
-    value: 0.3
+    value: 0.0
   - domain: com.apple.dock
     key: tilesize
     type: int
-    value: 48
+    value: 50
   - domain: com.apple.dock
     key: magnification
     type: bool
-    value: false
+    value: true
+  - domain: com.apple.dock
+    key: magnify
+    type: int
+    value: 70
+  - domain: com.apple.dock
+    key: largesize
+    type: int
+    value: 70
   - domain: com.apple.dock
     key: show-recents
     type: bool
@@ -33,6 +48,14 @@ macos_defaults:
     key: launchanim
     type: bool
     value: false
+  - domain: com.apple.dock
+    key: orientation
+    type: string
+    value: "left"
+  - domain: com.apple.dock
+    key: persistent-others
+    type: array
+    value: []
 
   # Finder
   - domain: com.apple.finder
@@ -69,6 +92,11 @@ macos_defaults:
     key: AppleShowAllExtensions
     type: bool
     value: true
+  - domain: NSGlobalDomain
+    key: _HIHideMenuBar
+    type: bool
+    value: true
+  
   - domain: NSGlobalDomain
     key: NSAutomaticSpellingCorrectionEnabled
     type: bool
@@ -120,7 +148,7 @@ macos_defaults:
   - domain: com.apple.screencapture
     key: type
     type: string
-    value: "png"
+    value: png
   - domain: com.apple.screencapture
     key: disable-shadow
     type: bool

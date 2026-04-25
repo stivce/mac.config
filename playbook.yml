@@ -5,8 +5,14 @@
   become: false
 
   roles:
+    - role: macos-sudo
+      tags: [sudo]
+
     - role: macos-update
       tags: [update]
+
+    - role: dotfiles
+      tags: [dotfiles]
 
     - role: homebrew
       tags: [homebrew]
@@ -16,9 +22,6 @@
 
     - role: common
       tags: [directories]
-
-    - role: macos-sudo
-      tags: [sudo]
 
     - role: packages-base
       tags: [packages]

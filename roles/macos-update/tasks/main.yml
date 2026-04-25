@@ -1,17 +1,26 @@
 ---
-- name: Check if passwordless sudo is available
-  ansible.builtin.command: sudo -n true
-  register: sudo_check
+- name: Check if passwordless sudo for softwareupdate is available
+  ansible.builtin.command: sudo -n /usr/sbin/softwareupdate --list
+  register: softwareupdate_sudo_check
   changed_when: false
   failed_when: false
   tags:
     - update
 
-- name: Run macOS software update
-  ansible.builtin.command: softwareupdate -ia
+- name: Run macOS software update with passwordless sudo
+  ansible.builtin.command: sudo -n /usr/sbin/softwareupdate -ia
   register: softwareupdate_result
   changed_when: "'No updates are available' not in softwareupdate_result.stdout"
-  become: "{{ sudo_check.rc == 0 }}"
+  when: softwareupdate_sudo_check.rc == 0
+  tags:
+    - update
+
+- name: Run macOS software update without sudo
+  ansible.builtin.command: /usr/sbin/softwareupdate -ia
+  register: softwareupdate_result
+  changed_when: "'No updates are available' not in softwareupdate_result.stdout"
+  when: softwareupdate_sudo_check.rc != 0
+  failed_when: softwareupdate_result.rc != 0
   tags:
     - update
 
