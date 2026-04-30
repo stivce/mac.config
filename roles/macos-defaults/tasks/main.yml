@@ -34,23 +34,22 @@
   tags:
     - macos-defaults
 
-- name: Add apps to Communication stack folder
+- name: Add apps to communication stack folder
   when: dock_stack_path is defined
   ansible.builtin.shell:
     cmd: |
       STACK_PATH="{{ dock_stack_path }}"
       mkdir -p "$STACK_PATH"
-      rm -f "$STACK_PATH"/*.app
-      ln -sf /Applications/WhatsApp.app "$STACK_PATH/"
-      ln -sf /Applications/Webex.app "$STACK_PATH/"
-      ln -sf "/Applications/Microsoft Teams.app" "$STACK_PATH/"
-      ln -sf /Applications/Telegram.app "$STACK_PATH/"
+      find "$STACK_PATH" -maxdepth 1 -type l -name "*.app" -delete
+      {% for app in dock_communication_apps %}
+      ln -sf "/Applications/{{ app }}" "$STACK_PATH/"
+      {% endfor %}
   become: false
   changed_when: true
   tags:
     - macos-defaults
 
-- name: Add Communication stack to dock
+- name: Add communication stack to Dock
   when: dock_stack_path is defined
   ansible.builtin.shell:
     cmd: dockutil --add "{{ dock_stack_path }}" --display stack --position end --no-restart
@@ -69,22 +68,22 @@
   tags:
     - macos-defaults
 
-- name: Add apps to Browsers stack folder
+- name: Add apps to browsers stack folder
   when: dock_browser_stack_path is defined
   ansible.builtin.shell:
     cmd: |
       STACK_PATH="{{ dock_browser_stack_path }}"
       mkdir -p "$STACK_PATH"
-      rm -f "$STACK_PATH"/*.app
-      ln -sf /Applications/Helium.app "$STACK_PATH/"
-      ln -sf /Applications/Zen.app "$STACK_PATH/"
-      ln -sf /Applications/Arc.app "$STACK_PATH/"
+      find "$STACK_PATH" -maxdepth 1 -type l -name "*.app" -delete
+      {% for app in dock_browser_apps %}
+      ln -sf "/Applications/{{ app }}" "$STACK_PATH/"
+      {% endfor %}
   become: false
   changed_when: true
   tags:
     - macos-defaults
 
-- name: Add Browsers stack to dock
+- name: Add browsers stack to Dock
   when: dock_browser_stack_path is defined
   ansible.builtin.shell:
     cmd: dockutil --add "{{ dock_browser_stack_path }}" --display stack --position beginning --no-restart

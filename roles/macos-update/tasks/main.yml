@@ -24,6 +24,58 @@
   tags:
     - update
 
+- name: Check if Homebrew (arm64) is installed
+  ansible.builtin.stat:
+    path: /opt/homebrew/bin/brew
+  register: brew_arm_check
+  tags:
+    - update
+    - homebrew
+
+- name: Check if Homebrew (Intel) is installed
+  ansible.builtin.stat:
+    path: /usr/local/bin/brew
+  register: brew_intel_check
+  when: not brew_arm_check.stat.exists
+  tags:
+    - update
+    - homebrew
+
+- name: Set Homebrew binary path
+  ansible.builtin.set_fact:
+    brew_path: "{{ '/opt/homebrew/bin/brew' if brew_arm_check.stat.exists else '/usr/local/bin/brew' }}"
+  when: brew_arm_check.stat.exists or brew_intel_check.stat.exists
+  tags:
+    - update
+    - homebrew
+
+- name: Update Homebrew metadata
+  community.general.homebrew:
+    path: "{{ brew_path }}"
+    update_homebrew: true
+  when: brew_path is defined
+  tags:
+    - update
+    - homebrew
+
+- name: Upgrade Homebrew formulas
+  community.general.homebrew:
+    path: "{{ brew_path }}"
+    upgrade_all: true
+  when: brew_path is defined
+  tags:
+    - update
+    - homebrew
+
+- name: Upgrade Homebrew casks
+  community.general.homebrew_cask:
+    path: "{{ brew_path | dirname }}"
+    upgrade_all: true
+  when: brew_path is defined
+  tags:
+    - update
+    - homebrew
+
 - name: Check if Xcode CLI tools are installed
   ansible.builtin.command: xcode-select -p
   register: xcode_check

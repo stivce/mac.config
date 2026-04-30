@@ -6,6 +6,17 @@ dock_stack_path: "{{ dock_stacks_base_path }}/Communication"
 dock_browser_stack_path: "{{ dock_stacks_base_path }}/Browsers"
 dock_downloads_path: "{{ lookup('env', 'HOME') }}/Downloads"
 
+dock_communication_apps:
+  - "WhatsApp.app"
+  - "Webex.app"
+  - "Microsoft Teams.app"
+  - "Telegram.app"
+
+dock_browser_apps:
+  - "Helium.app"
+  - "Zen Browser.app"
+  - "Arc.app"
+
 macos_defaults:
   # Dock
   - domain: com.apple.dock

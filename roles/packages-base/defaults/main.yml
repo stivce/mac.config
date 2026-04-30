@@ -2,6 +2,7 @@
 # Packages from shared_packages that must be installed as Homebrew casks on macOS
 homebrew_cask_packages:
   - kitty
+  - helium
 
 # Packages with different names on macOS (Homebrew)
 package_name_map:
