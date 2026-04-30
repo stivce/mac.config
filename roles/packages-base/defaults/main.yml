@@ -3,6 +3,8 @@
 homebrew_cask_packages:
   - kitty
   - helium
+  - autodesk-fusion
+  - affinity
 
 # Packages with different names on macOS (Homebrew)
 package_name_map:
