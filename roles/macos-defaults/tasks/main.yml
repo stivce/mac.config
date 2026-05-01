@@ -6,6 +6,12 @@
   tags:
     - macos-defaults
 
+- name: Set dockutil binary path
+  ansible.builtin.set_fact:
+    dockutil_bin: "{{ '/opt/homebrew/bin/dockutil' if ansible_architecture == 'arm64' else '/usr/local/bin/dockutil' }}"
+  tags:
+    - macos-defaults
+
 - name: Apply macOS defaults
   community.general.osx_defaults:
     domain: "{{ item.domain }}"
@@ -59,7 +65,7 @@
 - name: Add communication stack to Dock
   when: dock_stack_path is defined
   ansible.builtin.shell:
-    cmd: dockutil --add "{{ dock_stack_path }}" --display stack --position end --no-restart
+    cmd: "{{ dockutil_bin }} --add '{{ dock_stack_path }}' --display stack --position end --no-restart"
   become: false
   changed_when: true
   tags:
@@ -93,7 +99,7 @@
 - name: Add browsers stack to Dock
   when: dock_browser_stack_path is defined
   ansible.builtin.shell:
-    cmd: dockutil --add "{{ dock_browser_stack_path }}" --display stack --position beginning --no-restart
+    cmd: "{{ dockutil_bin }} --add '{{ dock_browser_stack_path }}' --display stack --position beginning --no-restart"
   become: false
   changed_when: true
   tags:
@@ -102,7 +108,7 @@
 - name: Add Downloads stack to dock
   when: dock_downloads_path is defined
   ansible.builtin.shell:
-    cmd: dockutil --add "{{ dock_downloads_path }}" --display stack --view fan --sort dateadded --position end --no-restart
+    cmd: "{{ dockutil_bin }} --add '{{ dock_downloads_path }}' --display stack --view fan --sort dateadded --position end --no-restart"
   become: false
   changed_when: true
   tags:
@@ -114,9 +120,9 @@
     cmd: |
       for app in {{ dock_apps | map('quote') | join(' ') }}; do
         if [[ "$app" == *"Dock Stacks"* ]]; then
-          dockutil --add "$app" --display stack --no-restart
+          {{ dockutil_bin }} --add "$app" --display stack --no-restart
         else
-          dockutil --add "$app" --no-restart
+          {{ dockutil_bin }} --add "$app" --no-restart
         fi
       done
   become: false
