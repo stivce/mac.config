@@ -171,6 +171,12 @@ macos_defaults:
     type: bool
     value: false
 
+  # Desktop widgets
+  - domain: com.apple.WindowManager
+    key: EnableWidgetsOnDesktop
+    type: bool
+    value: false
+
   # Menu bar clock
   - domain: com.apple.menuextra.clock
     key: DateFormat
