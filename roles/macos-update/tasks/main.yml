@@ -51,7 +51,7 @@
 
 - name: Update Homebrew metadata
   community.general.homebrew:
-    path: "{{ brew_path }}"
+    path: "{{ brew_path | dirname }}"
     update_homebrew: true
   when: brew_path is defined
   tags:
@@ -60,7 +60,7 @@
 
 - name: Upgrade Homebrew formulas
   community.general.homebrew:
-    path: "{{ brew_path }}"
+    path: "{{ brew_path | dirname }}"
     upgrade_all: true
   when: brew_path is defined
   tags:
