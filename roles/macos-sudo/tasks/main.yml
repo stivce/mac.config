@@ -1,9 +1,10 @@
 ---
-- name: Update sudoers to allow passwordless softwareupdate
+- name: Update sudoers to allow passwordless softwareupdate and installer
   ansible.builtin.copy:
-    dest: /etc/sudoers.d/softwareupdate
+    dest: /etc/sudoers.d/macos-automation
     content: |
       {{ ansible_facts['user_id'] }} ALL=(ALL) NOPASSWD: /usr/sbin/softwareupdate
+      {{ ansible_facts['user_id'] }} ALL=(ALL) NOPASSWD: /usr/sbin/installer
     mode: "0440"
     validate: visudo -cf %s
   become: true
