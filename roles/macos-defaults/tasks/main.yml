@@ -152,6 +152,13 @@
   tags:
     - macos-defaults
 
+- name: Restart SystemUIServer
+  ansible.builtin.command: /usr/bin/killall SystemUIServer
+  changed_when: true
+  become: false
+  tags:
+    - macos-defaults
+
 - name: Disable Gatekeeper (optional)
   ansible.builtin.command: spctl --master-disable
   changed_when: false
