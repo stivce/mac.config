@@ -176,6 +176,10 @@ macos_defaults:
     key: EnableWidgetsOnDesktop
     type: bool
     value: false
+  - domain: com.apple.WindowManager
+    key: DesktopWidgetStyle
+    type: int
+    value: 2
 
   # Menu bar clock
   - domain: com.apple.menuextra.clock
