@@ -85,6 +85,11 @@ macos_defaults:
     key: FXPreferredViewStyle
     type: string
     value: "Nlsv"
+
+  - domain: NSGlobalDomain
+    key: com.apple.Finder.FXPreferredViewStyle
+    type: string
+    value: "Nlsv"
   - domain: com.apple.finder
     key: FXDefaultSearchScope
     type: string
