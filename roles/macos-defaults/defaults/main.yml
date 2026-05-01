@@ -177,6 +177,10 @@ macos_defaults:
     type: bool
     value: false
   - domain: com.apple.WindowManager
+    key: StandardHideWidgets
+    type: bool
+    value: true
+  - domain: com.apple.WindowManager
     key: DesktopWidgetStyle
     type: int
     value: 2
