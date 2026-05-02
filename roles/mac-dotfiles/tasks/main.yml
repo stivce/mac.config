@@ -25,11 +25,17 @@
   tags:
     - macdot
 
-- name: Get list of files in repo
+- name: Get list of files in repo (excluding README)
   ansible.builtin.command: >
     git --git-dir={{ macdot_bare_dir }} ls-tree -r --name-only HEAD
-  register: repo_files
+  register: repo_files_raw
   changed_when: false
+  tags:
+    - macdot
+
+- name: Set fact for repo files to checkout
+  ansible.builtin.set_fact:
+    repo_files: "{{ repo_files_raw.stdout_lines | reject('search', '^README') | list }}"
   tags:
     - macdot
 
@@ -39,7 +45,7 @@
     dest: "{{ lookup('env', 'HOME') }}/{{ item }}.backup"
     remote_src: true
     mode: preserve
-  loop: "{{ repo_files.stdout_lines }}"
+  loop: "{{ repo_files }}"
   when: item is exists
   tags:
     - macdot
