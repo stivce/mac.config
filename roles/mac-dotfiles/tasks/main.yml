@@ -1,15 +1,17 @@
 ---
-- name: Check if mac.dot is already cloned
-  ansible.builtin.stat:
-    path: "{{ macdot_bare_dir }}/HEAD"
-  register: macdot_check
+- name: Check if mac.dot is already configured
+  ansible.builtin.shell: >
+    git --git-dir={{ macdot_bare_dir }} config --get status.showUntrackedFiles
+  register: macdot_configured
+  changed_when: false
+  failed_when: false
   tags:
     - macdot
 
 - name: Clone mac.dot repository (bare)
   ansible.builtin.command: >
     git clone --bare {{ macdot_repo }} {{ macdot_bare_dir }}
-  when: not macdot_check.stat.exists
+  when: macdot_configured.rc != 0
   changed_when: true
   tags:
     - macdot
@@ -23,23 +25,31 @@
   tags:
     - macdot
 
-- name: Checkout dotfiles
+- name: Get list of files in repo
   ansible.builtin.command: >
-    git --git-dir={{ macdot_bare_dir }}
-    --work-tree={{ lookup('env', 'HOME') }}
-    checkout
-  register: macdot_checkout
+    git --git-dir={{ macdot_bare_dir }} ls-tree -r --name-only HEAD
+  register: repo_files
   changed_when: false
-  failed_when: false
   tags:
     - macdot
 
-- name: Fail if checkout has conflicts
-  ansible.builtin.fail:
-    msg: "mac.dot checkout has local file conflicts. Resolve or back up existing files and rerun."
-  when:
-    - macdot_checkout.rc is defined
-    - macdot_checkout.rc != 0
+- name: Backup existing files that conflict
+  ansible.builtin.copy:
+    src: "{{ lookup('env', 'HOME') }}/{{ item }}"
+    dest: "{{ lookup('env', 'HOME') }}/{{ item }}.backup"
+    remote_src: true
+    mode: preserve
+  loop: "{{ repo_files.stdout_lines }}"
+  when: item is exists
+  tags:
+    - macdot
+
+- name: Checkout dotfiles (force)
+  ansible.builtin.command: >
+    git --git-dir={{ macdot_bare_dir }}
+    --work-tree={{ lookup('env', 'HOME') }}
+    checkout --force
+  changed_when: true
   tags:
     - macdot
 
