@@ -5,12 +5,6 @@
   become: false
 
   roles:
-    - role: macos-sudo
-      tags: [sudo]
-
-    - role: dotfiles
-      tags: [dotfiles]
-
     - role: macos-defaults
       tags: [defaults]
 
