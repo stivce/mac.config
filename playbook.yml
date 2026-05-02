@@ -17,5 +17,8 @@
     - role: common
       tags: [directories]
 
+    - role: mac-dotfiles
+      tags: [macdot]
+
     - role: packages-base
       tags: [packages]
