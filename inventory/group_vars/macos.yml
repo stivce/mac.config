@@ -24,3 +24,6 @@ homebrew_casks:
   - theboredteam/boring-notch/boring-notch
   - balenaetcher
   - utm
+  - kitty
+  - autodesk-fusion
+  - affinity
