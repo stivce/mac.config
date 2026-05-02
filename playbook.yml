@@ -5,6 +5,12 @@
   become: false
 
   roles:
+    - role: homebrew
+      tags: [homebrew]
+
+    - role: macos-update
+      tags: [update]
+
     - role: macos-defaults
       tags: [defaults]
 
