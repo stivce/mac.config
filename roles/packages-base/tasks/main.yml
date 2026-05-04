@@ -4,7 +4,7 @@
   community.general.homebrew:
     name: "{{ package_name_map[item]['darwin'] | default(item) }}"
     state: present
-  loop: "{{ shared_packages | difference(homebrew_cask_packages) }}"
+  loop: "{{ shared_packages | difference(homebrew_casks) }}"
   become: false
   tags:
     - packages
@@ -13,7 +13,7 @@
   community.general.homebrew_cask:
     name: "{{ item }}"
     state: present
-  loop: "{{ homebrew_cask_packages }}"
+  loop: "{{ homebrew_casks }}"
   become: false
   tags:
     - packages
