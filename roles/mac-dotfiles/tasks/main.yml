@@ -54,7 +54,7 @@
   ansible.builtin.shell: |
     BRANCH=$(git --git-dir={{ macdot_bare_dir }} symbolic-ref --short HEAD)
     git --git-dir={{ macdot_bare_dir }} fetch origin
-    git --git-dir={{ macdot_bare_dir }} update-ref refs/heads/$BRANCH origin/$BRANCH
+    git --git-dir={{ macdot_bare_dir }} update-ref refs/heads/$BRANCH FETCH_HEAD
   changed_when: false
   tags:
     - macdot
