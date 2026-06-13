@@ -24,6 +24,7 @@ shared_packages:
 
 homebrew_formulas_extra:
   - openconnect
+  - macmon
 
 homebrew_casks:
   - zen-browser
