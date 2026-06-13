@@ -1,105 +1,19 @@
 ---
-- name: Check if passwordless sudo for softwareupdate is available
-  ansible.builtin.command: sudo -n /usr/sbin/softwareupdate --list
-  register: softwareupdate_sudo_check
-  changed_when: false
-  failed_when: false
-  tags:
-    - update
-
-- name: Run macOS software update with passwordless sudo
-  ansible.builtin.command: sudo -n /usr/sbin/softwareupdate -ia
-  register: softwareupdate_result
-  changed_when: "'No updates are available' not in softwareupdate_result.stdout"
-  when: softwareupdate_sudo_check.rc == 0
-  tags:
-    - update
-
-- name: Run macOS software update without sudo
-  ansible.builtin.command: /usr/sbin/softwareupdate -ia
-  register: softwareupdate_result
-  changed_when: "'No updates are available' not in softwareupdate_result.stdout"
-  when: softwareupdate_sudo_check.rc != 0
-  failed_when: softwareupdate_result.rc != 0
-  tags:
-    - update
-
-- name: Check if Homebrew (arm64) is installed
-  ansible.builtin.stat:
-    path: /opt/homebrew/bin/brew
-  register: brew_arm_check
-  tags:
-    - update
-    - homebrew
-
-- name: Check if Homebrew (Intel) is installed
-  ansible.builtin.stat:
-    path: /usr/local/bin/brew
-  register: brew_intel_check
-  when: not brew_arm_check.stat.exists
-  tags:
-    - update
-    - homebrew
-
-- name: Set Homebrew binary path
-  ansible.builtin.set_fact:
-    brew_path: "{{ '/opt/homebrew/bin/brew' if brew_arm_check.stat.exists else '/usr/local/bin/brew' }}"
-  when: brew_arm_check.stat.exists or brew_intel_check.stat.exists
-  tags:
-    - update
-    - homebrew
-
-- name: Update Homebrew metadata
-  community.general.homebrew:
-    path: "{{ brew_path | dirname }}"
-    update_homebrew: true
-  when: brew_path is defined
-  tags:
-    - update
-    - homebrew
+# macOS software updates and Xcode CLT are handled by Whitesnake before Ansible runs.
+# Homebrew path is guaranteed at /opt/homebrew/bin/brew on Apple Silicon by Whitesnake.
 
 - name: Upgrade Homebrew formulas
   community.general.homebrew:
-    path: "{{ brew_path | dirname }}"
+    path: /opt/homebrew/bin
     upgrade_all: true
-  when: brew_path is defined
+  become: false
   tags:
     - update
-    - homebrew
 
 - name: Upgrade Homebrew casks
   community.general.homebrew_cask:
-    path: "{{ brew_path | dirname }}"
+    path: /opt/homebrew/bin
     upgrade_all: true
-  when: brew_path is defined
+  become: false
   tags:
     - update
-    - homebrew
-
-- name: Check if Xcode CLI tools are installed
-  ansible.builtin.command: xcode-select -p
-  register: xcode_check
-  changed_when: false
-  failed_when: false
-  tags:
-    - xcode
-
-- name: Install Xcode CLI tools
-  ansible.builtin.command: xcode-select --install
-  when: xcode_check.rc != 0
-  changed_when: true
-  tags:
-    - xcode
-    - never
-
-- name: Wait for Xcode CLI tools installation to complete
-  ansible.builtin.command: xcode-select -p
-  register: xcode_verify
-  until: xcode_verify.rc == 0
-  retries: 30
-  delay: 30
-  changed_when: false
-  when: xcode_check.rc != 0
-  tags:
-    - xcode
-    - never
