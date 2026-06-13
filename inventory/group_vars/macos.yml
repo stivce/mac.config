@@ -22,10 +22,13 @@ shared_packages:
   - python3
   - ansible
 
+homebrew_taps:
+  - anomalyco/tap
+
 homebrew_formulas_extra:
   - openconnect
   - macmon
-  - anomalyco/tap/opencode
+  - opencode
 
 homebrew_casks:
   - zen-browser
