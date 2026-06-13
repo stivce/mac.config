@@ -32,10 +32,9 @@
     - packages
 
 - name: Clone simple-bar widget for Übersicht
-  ansible.builtin.git:
-    repo: https://github.com/Jean-Tinland/simple-bar.git
-    dest: "{{ lookup('env', 'HOME') }}/Library/Application Support/Übersicht/widgets/simple-bar"
-    update: false
+  ansible.builtin.command:
+    cmd: git clone https://github.com/Jean-Tinland/simple-bar.git "{{ lookup('env', 'HOME') }}/Library/Application Support/Übersicht/widgets/simple-bar"
+    creates: "{{ lookup('env', 'HOME') }}/Library/Application Support/Übersicht/widgets/simple-bar/.git"
   tags:
     - packages
     - simple-bar
