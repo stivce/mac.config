@@ -50,6 +50,15 @@
   tags:
     - macdot
 
+- name: Fetch latest dotfiles from remote
+  ansible.builtin.shell: |
+    BRANCH=$(git --git-dir={{ macdot_bare_dir }} symbolic-ref --short HEAD)
+    git --git-dir={{ macdot_bare_dir }} fetch origin
+    git --git-dir={{ macdot_bare_dir }} update-ref refs/heads/$BRANCH origin/$BRANCH
+  changed_when: false
+  tags:
+    - macdot
+
 - name: Checkout dotfiles (force)
   ansible.builtin.command: >
     git --git-dir={{ macdot_bare_dir }}
