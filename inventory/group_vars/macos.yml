@@ -2,6 +2,26 @@
 ansible_connection: local
 ansible_become_pass: "{{ vault_become_pass | default(omit) }}"
 
+shared_packages:
+  - zsh
+  - tree
+  - git
+  - gh
+  - neovim
+  - tmux
+  - fastfetch
+  - jq
+  - btop
+  - bat
+  - eza
+  - ripgrep
+  - fd
+  - starship
+  - fzf
+  - git-delta
+  - python3
+  - ansible
+
 homebrew_formulas_extra:
   - openconnect
 
@@ -9,6 +29,8 @@ homebrew_casks:
   - zen-browser
   - nordvpn
   - lulu
+  - appcleaner
+  - hiddenbar
   - raycast
   - arc
   - nikitabobko/tap/aerospace
@@ -29,3 +51,4 @@ homebrew_casks:
   - theboredteam/boring-notch/boring-notch
   - balenaetcher
   - utm
+  - kitty

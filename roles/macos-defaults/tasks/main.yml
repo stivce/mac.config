@@ -1,4 +1,17 @@
 ---
+- name: Ensure dockutil is installed
+  community.general.homebrew:
+    name: dockutil
+    state: present
+  tags:
+    - macos-defaults
+
+- name: Set dockutil binary path
+  ansible.builtin.set_fact:
+    dockutil_bin: "{{ '/opt/homebrew/bin/dockutil' if ansible_architecture == 'arm64' else '/usr/local/bin/dockutil' }}"
+  tags:
+    - macos-defaults
+
 - name: Apply macOS defaults
   community.general.osx_defaults:
     domain: "{{ item.domain }}"
@@ -13,6 +26,9 @@
   notify:
     - Restart Dock
     - Restart Finder
+    - Restart ControlCenter
+    - Restart NotificationCenter
+    - Restart WindowManager
   tags:
     - macos-defaults
 
@@ -34,26 +50,25 @@
   tags:
     - macos-defaults
 
-- name: Add apps to Communication stack folder
+- name: Add apps to communication stack folder
   when: dock_stack_path is defined
   ansible.builtin.shell:
     cmd: |
       STACK_PATH="{{ dock_stack_path }}"
       mkdir -p "$STACK_PATH"
-      rm -f "$STACK_PATH"/*.app
-      ln -sf /Applications/WhatsApp.app "$STACK_PATH/"
-      ln -sf /Applications/Webex.app "$STACK_PATH/"
-      ln -sf "/Applications/Microsoft Teams.app" "$STACK_PATH/"
-      ln -sf /Applications/Telegram.app "$STACK_PATH/"
+      find "$STACK_PATH" -maxdepth 1 -type l -name "*.app" -delete
+      {% for app in dock_communication_apps %}
+      ln -sf "/Applications/{{ app }}" "$STACK_PATH/"
+      {% endfor %}
   become: false
   changed_when: true
   tags:
     - macos-defaults
 
-- name: Add Communication stack to dock
+- name: Add communication stack to Dock
   when: dock_stack_path is defined
   ansible.builtin.shell:
-    cmd: dockutil --add "{{ dock_stack_path }}" --display stack --position end --no-restart
+    cmd: "{{ dockutil_bin }} --add '{{ dock_stack_path }}' --display stack --position end --no-restart"
   become: false
   changed_when: true
   tags:
@@ -69,25 +84,25 @@
   tags:
     - macos-defaults
 
-- name: Add apps to Browsers stack folder
+- name: Add apps to browsers stack folder
   when: dock_browser_stack_path is defined
   ansible.builtin.shell:
     cmd: |
       STACK_PATH="{{ dock_browser_stack_path }}"
       mkdir -p "$STACK_PATH"
-      rm -f "$STACK_PATH"/*.app
-      ln -sf /Applications/Helium.app "$STACK_PATH/"
-      ln -sf /Applications/Zen.app "$STACK_PATH/"
-      ln -sf /Applications/Arc.app "$STACK_PATH/"
+      find "$STACK_PATH" -maxdepth 1 -type l -name "*.app" -delete
+      {% for app in dock_browser_apps %}
+      ln -sf "/Applications/{{ app }}" "$STACK_PATH/"
+      {% endfor %}
   become: false
   changed_when: true
   tags:
     - macos-defaults
 
-- name: Add Browsers stack to dock
+- name: Add browsers stack to Dock
   when: dock_browser_stack_path is defined
   ansible.builtin.shell:
-    cmd: dockutil --add "{{ dock_browser_stack_path }}" --display stack --position beginning --no-restart
+    cmd: "{{ dockutil_bin }} --add '{{ dock_browser_stack_path }}' --display stack --position beginning --no-restart"
   become: false
   changed_when: true
   tags:
@@ -96,7 +111,7 @@
 - name: Add Downloads stack to dock
   when: dock_downloads_path is defined
   ansible.builtin.shell:
-    cmd: dockutil --add "{{ dock_downloads_path }}" --display stack --view fan --sort dateadded --position end --no-restart
+    cmd: "{{ dockutil_bin }} --add '{{ dock_downloads_path }}' --display stack --view fan --sort dateadded --position end --no-restart"
   become: false
   changed_when: true
   tags:
@@ -108,9 +123,9 @@
     cmd: |
       for app in {{ dock_apps | map('quote') | join(' ') }}; do
         if [[ "$app" == *"Dock Stacks"* ]]; then
-          dockutil --add "$app" --display stack --no-restart
+          {{ dockutil_bin }} --add "$app" --display stack --no-restart
         else
-          dockutil --add "$app" --no-restart
+          {{ dockutil_bin }} --add "$app" --no-restart
         fi
       done
   become: false
@@ -119,17 +134,11 @@
   tags:
     - macos-defaults
 
-- name: Restart Dock
-  ansible.builtin.command: /usr/bin/killall Dock
-  changed_when: true
-  become: false
-  tags:
-    - macos-defaults
-
 - name: Disable Gatekeeper (optional)
   ansible.builtin.command: spctl --master-disable
   changed_when: false
   become: true
+  when: disable_gatekeeper | default(false) | bool
   tags:
     - macos-defaults
     - never

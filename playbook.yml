@@ -5,23 +5,14 @@
   become: false
 
   roles:
-    - role: macos-sudo
-      tags: [sudo]
-
-    - role: macos-update
-      tags: [update]
-
-    - role: dotfiles
-      tags: [dotfiles]
-
-    - role: homebrew
-      tags: [homebrew]
-
     - role: macos-defaults
       tags: [defaults]
 
     - role: common
       tags: [directories]
+
+    - role: mac-dotfiles
+      tags: [macdot]
 
     - role: packages-base
       tags: [packages]

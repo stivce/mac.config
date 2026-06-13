@@ -6,6 +6,14 @@ dock_stack_path: "{{ dock_stacks_base_path }}/Communication"
 dock_browser_stack_path: "{{ dock_stacks_base_path }}/Browsers"
 dock_downloads_path: "{{ lookup('env', 'HOME') }}/Downloads"
 
+dock_communication_apps:
+  - "WhatsApp.app"
+  - "Telegram.app"
+
+dock_browser_apps:
+  - "Zen.app"
+  - "Arc.app"
+
 macos_defaults:
   # Dock
   - domain: com.apple.dock
@@ -72,6 +80,11 @@ macos_defaults:
     value: true
   - domain: com.apple.finder
     key: FXPreferredViewStyle
+    type: string
+    value: "Nlsv"
+
+  - domain: NSGlobalDomain
+    key: com.apple.Finder.FXPreferredViewStyle
     type: string
     value: "Nlsv"
   - domain: com.apple.finder
@@ -159,6 +172,20 @@ macos_defaults:
     key: mru-spaces
     type: bool
     value: false
+
+  # Desktop widgets
+  - domain: com.apple.WindowManager
+    key: EnableWidgetsOnDesktop
+    type: bool
+    value: false
+  - domain: com.apple.WindowManager
+    key: StandardHideWidgets
+    type: bool
+    value: true
+  - domain: com.apple.WindowManager
+    key: DesktopWidgetStyle
+    type: int
+    value: 2
 
   # Menu bar clock
   - domain: com.apple.menuextra.clock

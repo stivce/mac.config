@@ -1,31 +1,10 @@
 ---
-# --- macOS: Homebrew ---
 - name: Install shared packages via Homebrew formulas
   community.general.homebrew:
     name: "{{ package_name_map[item]['darwin'] | default(item) }}"
     state: present
-  loop: "{{ shared_packages | difference(homebrew_cask_packages) }}"
+  loop: "{{ shared_packages | difference(homebrew_casks) }}"
   become: false
-  tags:
-    - packages
-
-- name: Install shared cask packages via Homebrew casks
-  community.general.homebrew_cask:
-    name: "{{ item }}"
-    state: present
-  loop: "{{ homebrew_cask_packages }}"
-  become: false
-  tags:
-    - packages
-
-- name: Install extra Homebrew formulas
-  community.general.homebrew:
-    name: "{{ homebrew_formulas_extra }}"
-    state: present
-  become: false
-  when:
-    - homebrew_formulas_extra is defined
-    - homebrew_formulas_extra | length > 0
   tags:
     - packages
 
@@ -41,3 +20,13 @@
   tags:
     - packages
 
+- name: Install extra Homebrew formulas
+  community.general.homebrew:
+    name: "{{ homebrew_formulas_extra }}"
+    state: present
+  become: false
+  when:
+    - homebrew_formulas_extra is defined
+    - homebrew_formulas_extra | length > 0
+  tags:
+    - packages

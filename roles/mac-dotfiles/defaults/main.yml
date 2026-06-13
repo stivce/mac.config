@@ -1,0 +1,8 @@
+---
+macdot_repo: "https://github.com/stivce/mac.dot.git"
+macdot_dir: ".macdot"
+macdot_bare_dir: "{{ lookup('env', 'HOME') }}/{{ macdot_dir }}"
+macdot_alias: "macdot"
+shell_profiles:
+  - "{{ lookup('env', 'HOME') }}/.zshrc"
+  - "{{ lookup('env', 'HOME') }}/.bashrc"
