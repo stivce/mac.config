@@ -30,3 +30,24 @@
     - homebrew_formulas_extra | length > 0
   tags:
     - packages
+
+- name: Clone simple-bar widget for Übersicht
+  ansible.builtin.git:
+    repo: https://github.com/Jean-Tinland/simple-bar.git
+    dest: "{{ lookup('env', 'HOME') }}/Library/Application Support/Übersicht/widgets/simple-bar"
+    update: false
+  tags:
+    - packages
+    - simple-bar
+
+- name: Restore simple-bar config from dotfiles
+  ansible.builtin.command: >
+    git --git-dir={{ lookup('env', 'HOME') }}/.macdot
+    --work-tree={{ lookup('env', 'HOME') }}
+    checkout --
+    "Library/Application Support/Übersicht/widgets/simple-bar/lib/settings.js"
+    "Library/Application Support/Übersicht/widgets/simple-bar/lib/components/aerospace-context.jsx"
+  changed_when: false
+  tags:
+    - packages
+    - simple-bar
