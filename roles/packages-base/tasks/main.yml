@@ -20,10 +20,21 @@
   tags:
     - packages
 
+- name: Tap extra Homebrew taps
+  community.general.homebrew_tap:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ homebrew_taps | default([]) }}"
+  become: false
+  when: homebrew_taps is defined and homebrew_taps | length > 0
+  tags:
+    - packages
+
 - name: Install extra Homebrew formulas
   community.general.homebrew:
-    name: "{{ homebrew_formulas_extra }}"
+    name: "{{ item }}"
     state: present
+  loop: "{{ homebrew_formulas_extra }}"
   become: false
   when:
     - homebrew_formulas_extra is defined
