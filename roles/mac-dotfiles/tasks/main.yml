@@ -46,7 +46,7 @@
     remote_src: true
     mode: preserve
   loop: "{{ repo_files }}"
-  when: item is exists
+  when: macdot_configured.rc != 0 and item is exists
   tags:
     - macdot
 
