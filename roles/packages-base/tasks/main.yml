@@ -58,6 +58,7 @@
     "Library/Application Support/Übersicht/widgets/simple-bar/lib/settings.js"
     "Library/Application Support/Übersicht/widgets/simple-bar/lib/components/aerospace-context.jsx"
   changed_when: false
+  ignore_errors: true
   tags:
     - packages
     - simple-bar
