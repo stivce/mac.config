@@ -18,6 +18,7 @@ shared_packages:
   - fd
   - starship
   - fzf
+  - gum
   - git-delta
   - python3
   - ansible
